@@ -8,20 +8,18 @@ setInterval(() => {
 
 emitter.on("timer", (msg) => console.log(msg));
 
-// Async function that waits on an event
-const waitForEvent = () => {
-  return new Promise((resolve) => {
-    emitter.on("eventWait", (msg) => resolve(msg));
-  });
-};
+// Refactored async function that waits on an event using an IIFE and setTimeout
+(async () => {
+  // Create an artificial 2 second delay
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  // Emit a custom event
+  emitter.emit("my-custom-event", "Hello World!");
+})();
 
-const doWait = async () => {
-  const msg = await waitForEvent();
-  console.log("We got an event! Here it is:", msg);
-};
-
-doWait();
-emitter.emit("eventWait", "Hello World!");
+// Listen for custom event and log the result to the console
+emitter.on("my-custom-event", (event) =>
+  console.log("We got an event! Here it is:", event)
+);
 
 // Emitting and handling multiple events
 emitter.on("greet", (name) => console.log(`Hello, ${name}!`));
