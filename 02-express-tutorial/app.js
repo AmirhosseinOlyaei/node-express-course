@@ -15,11 +15,13 @@ app.listen(3000, () => {
 });
 
 // app.get and app.post statements for the routes you will handle. Eventually these will be refactored into router modules, but for now you can put them inline.
-app.get("/", (req, res) => {
-  res.send("Hello World");
+app.get("/api/v1/test", (req, res) => {
+  // res.send("Getting ...");
+  res.json({ message: "It worked!" });
 });
-app.post("/", (req, res) => {
-  res.send("Hello World");
+app.post("/post", (req, res) => {
+  console.log(req.body);
+  res.send("Posting!");
 });
 
 // An app.all statement after these to handle page not found conditions.
