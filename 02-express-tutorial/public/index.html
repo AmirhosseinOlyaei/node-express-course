@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        Hello!
+    </div>
+
+    <button onclick="fetchTest()">Fetch Test</button>
+    <br><br>
+
+    <button onclick="fetchProducts()">Fetch All Products</button>
+    <br><br>
+
+    <label for="productID">Product ID:</label>
+    <input type="text" id="productID">
+    <button onclick="fetchProductById()">Fetch Product by ID</button>
+    <br><br>
+
+    <label for="searchQuery">Search:</label>
+    <input type="text" id="searchQuery">
+    <label for="limitQuery">Limit:</label>
+    <input type="text" id="limitQuery">
+    <button onclick="fetchQuery()">Fetch Query</button>
+    <br><br>
+
+    <label for="priceFilter">Price Under:</label>
+    <input type="text" id="priceFilter">
+    <button onclick="fetchProductsUnderPrice()">Fetch Products Under Price</button>
+    <br><br>
+
+    <div id="result"></div>
+
+    <script>
+        async function fetchTest() {
+            const response = await fetch("/api/v1/test");
+            const data = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function fetchProducts() {
+            const response = await fetch("/api/v1/products");
+            const data = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function fetchProductById() {
+            const productID = document.getElementById("productID").value;
+            const response = await fetch(`/api/v1/products/${productID}`);
+            const data = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function fetchQuery() {
+            const search = document.getElementById("searchQuery").value;
+            const limit = document.getElementById("limitQuery").value;
+            const response = await fetch(`/api/v1/query?search=${search}&limit=${limit}`);
+            const data = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function fetchProductsUnderPrice() {
+            const price = document.getElementById("priceFilter").value;
+            const response = await fetch(`/api/v1/products/under/${price}`);
+            const data = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+
+</body>
+
+</html>
