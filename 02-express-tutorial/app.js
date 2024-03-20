@@ -47,9 +47,7 @@ app.get("/api/v1/query", (req, res) => {
   let filteredProducts = products;
 
   if (search) {
-    filteredProducts = filteredProducts.filter((p) =>
-      p.name.startsWith(search)
-    );
+    filteredProducts = filteredProducts.filter((p) => p.name.includes(search));
   }
 
   if (limit) {
