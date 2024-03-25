@@ -35,6 +35,19 @@
     <button onclick="fetchProductsUnderPrice()">Fetch Products Under Price</button>
     <br><br>
 
+    <button onclick="fetchPeople()">Fetch All People</button>
+    <br><br>
+
+    <label for="personName">Person Name:</label>
+    <input type="text" id="personName">
+    <button onclick="addPerson()">Add Person</button>
+    <br><br>
+
+    <label for="nameInput">Person Name to Search:</label>
+    <input type="text" id="nameInput">
+    <button onclick="fetchPersonByName()">Fetch Person by Name</button>
+    <br><br>
+
     <div id="result"></div>
 
     <script>
@@ -71,8 +84,33 @@
             const data = await response.json();
             document.getElementById("result").innerText = JSON.stringify(data, null, 2);
         }
-    </script>
 
+        async function fetchPeople() {
+            const response = await fetch("/api/v1/people");
+            const data = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function addPerson() {
+            const name = document.getElementById("personName").value;
+            const response = await fetch("/api/v1/people", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name })
+            });
+            const data = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function fetchPersonByName() {
+            const name = document.getElementById("nameInput").value;
+            const response = await fetch(`/api/v1/people/name/${name}`);
+            const data = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
 </body>
 
 </html>

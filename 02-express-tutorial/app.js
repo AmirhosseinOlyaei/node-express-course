@@ -17,9 +17,16 @@ app.use(express.static("./methods-public"));
 
 // Middleware for parsing JSON bodies
 app.use(express.json());
+app.use(logger);
 
 // Use logger middleware for all paths
-app.use(logger);
+// app.get("/login", (req, res) => {
+//   res.send("Hello World");
+// });
+
+app.get("/", logger, (req, res) => {
+  console.log("Home");
+});
 
 // People router
 const peopleRouter = require("./routes/people");
@@ -106,6 +113,17 @@ app.get("/api/v1/test", async (req, res) => {
     res.json({ message: "It worked!" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/login", (req, res) => {
+  const { name } = req.body;
+  // You can add any logic here to handle the form submission
+  // For example, you might check if the name matches a certain value
+  if (name === "expectedName") {
+    res.send("Login successful!");
+  } else {
+    res.status(400).send("Invalid name");
   }
 });
 

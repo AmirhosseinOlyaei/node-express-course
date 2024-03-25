@@ -70,10 +70,28 @@ const deletePerson = (req, res) => {
   }
 };
 
+const getPersonByName = (req, res) => {
+  try {
+    const { name } = req.params;
+    const person = people.find(
+      (p) => p.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (person) {
+      res.json(person);
+    } else {
+      res.status(404).json({ success: false, message: "Person not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   getPeople,
   addPerson,
   getPersonById,
   updatePerson,
   deletePerson,
+  getPersonByName,
 };
