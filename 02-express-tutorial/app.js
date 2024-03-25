@@ -1,5 +1,5 @@
 console.log("Express Tutorial");
-const { products } = require("./data");
+const { products, people } = require("./data");
 
 // The require statement to import the express module
 const express = require("express");
@@ -7,24 +7,25 @@ const express = require("express");
 // Creation of the app as returned from calling express()
 const app = express();
 
+const logger = (req, res, next) => {
+  console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
+  next();
+};
+
 // app.use statements for the middleware. You’ll eventually use many kinds of middleware, but for now the only middleware we are using is express.static().
-app.use(express.static("./public"));
+app.use(express.static("./methods-public"));
 
-// Listen on port 3000
-app.listen(3000, () => {
-  console.log("App listening on port 3000");
-});
+// Middleware for parsing JSON bodies
+app.use(express.json());
 
-// app.get and app.post statements for the routes you will handle. Eventually these will be refactored into router modules, but for now you can put them inline.
-app.get("/get", (req, res) => {
-  res.send("Getting ...");
-});
-app.post("/post", (req, res) => {
-  res.send("Posting!");
-});
-app.get("/api/v1/test", (req, res) => {
-  res.json({ message: "It worked!" });
-});
+// Use logger middleware for all paths
+app.use(logger);
+
+// People router
+const peopleRouter = require("./routes/people");
+app.use("/api/v1/people", peopleRouter);
+
+// Products routes
 app.get("/api/v1/products", (req, res) => {
   res.json(products);
 });
@@ -39,6 +40,14 @@ app.get("/api/v1/products/:productID", (req, res) => {
   } else {
     res.status(404).json({ message: "That product was not found." });
   }
+});
+
+// http://localhost:3000/api/v1/products/under/30
+app.get("/api/v1/products/under/:price", (req, res) => {
+  const maxPrice = parseFloat(req.params.price);
+  const filteredProducts = products.filter((p) => p.price <= maxPrice);
+
+  res.json(filteredProducts);
 });
 
 // http://localhost:3000/api/v1/query?search=a&limit=2
@@ -57,12 +66,15 @@ app.get("/api/v1/query", (req, res) => {
   res.json(filteredProducts);
 });
 
-// http://localhost:3000/api/v1/products/under/30
-app.get("/api/v1/products/under/:price", (req, res) => {
-  const maxPrice = parseFloat(req.params.price);
-  const filteredProducts = products.filter((p) => p.price <= maxPrice);
-
-  res.json(filteredProducts);
+// app.get and app.post statements for the routes you will handle. Eventually these will be refactored into router modules, but for now you can put them inline.
+app.get("/get", (req, res) => {
+  res.send("Getting ...");
+});
+app.post("/post", (req, res) => {
+  res.send("Posting!");
+});
+app.get("/api/v1/test", (req, res) => {
+  res.json({ message: "It worked!" });
 });
 
 // An app.all statement after these to handle page not found conditions.
