@@ -19,11 +19,6 @@ app.use(express.static("./methods-public"));
 app.use(express.json());
 app.use(logger);
 
-// Use logger middleware for all paths
-// app.get("/login", (req, res) => {
-//   res.send("Hello World");
-// });
-
 app.get("/", logger, (req, res) => {
   console.log("Home");
 });
@@ -33,99 +28,88 @@ const peopleRouter = require("./routes/people");
 app.use("/api/v1/people", peopleRouter);
 
 // Products routes
-app.get("/api/v1/products", async (req, res) => {
-  try {
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+// app.get("/api/v1/products", async (req, res) => {
+//   try {
+//     res.json(products);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
 // http://localhost:3000/api/v1/products/1
-app.get("/api/v1/products/:productID", async (req, res) => {
-  try {
-    const idToFind = parseInt(req.params.productID);
-    const product = products.find((p) => p.id === idToFind);
+// app.get("/api/v1/products/:productID", async (req, res) => {
+//   try {
+//     const idToFind = parseInt(req.params.productID);
+//     const product = products.find((p) => p.id === idToFind);
 
-    if (product) {
-      res.json(product);
-    } else {
-      res.status(404).json({ message: "That product was not found." });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+//     if (product) {
+//       res.json(product);
+//     } else {
+//       res.status(404).json({ message: "That product was not found." });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
 // http://localhost:3000/api/v1/products/under/30
-app.get("/api/v1/products/under/:price", async (req, res) => {
-  try {
-    const maxPrice = parseFloat(req.params.price);
-    const filteredProducts = products.filter((p) => p.price <= maxPrice);
+// app.get("/api/v1/products/under/:price", async (req, res) => {
+//   try {
+//     const maxPrice = parseFloat(req.params.price);
+//     const filteredProducts = products.filter((p) => p.price <= maxPrice);
 
-    res.json(filteredProducts);
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+//     res.json(filteredProducts);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
 // http://localhost:3000/api/v1/query?search=a&limit=2
-app.get("/api/v1/query", async (req, res) => {
-  try {
-    const { search, limit } = req.query;
-    let filteredProducts = products;
+// app.get("/api/v1/query", async (req, res) => {
+//   try {
+//     const { search, limit } = req.query;
+//     let filteredProducts = products;
 
-    if (search) {
-      filteredProducts = filteredProducts.filter((p) =>
-        p.name.includes(search)
-      );
-    }
+//     if (search) {
+//       filteredProducts = filteredProducts.filter((p) =>
+//         p.name.includes(search)
+//       );
+//     }
 
-    if (limit) {
-      filteredProducts = filteredProducts.slice(0, parseInt(limit));
-    }
+//     if (limit) {
+//       filteredProducts = filteredProducts.slice(0, parseInt(limit));
+//     }
 
-    res.json(filteredProducts);
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+//     res.json(filteredProducts);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
 // app.get and app.post statements for the routes you will handle. Eventually these will be refactored into router modules, but for now you can put them inline.
-app.get("/get", async (req, res) => {
-  try {
-    res.send("Getting ...");
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+// app.get("/get", async (req, res) => {
+//   try {
+//     res.send("Getting ...");
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
-app.post("/post", async (req, res) => {
-  try {
-    res.send("Posting!");
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+// app.post("/post", async (req, res) => {
+//   try {
+//     res.send("Posting!");
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
-app.get("/api/v1/test", async (req, res) => {
-  try {
-    res.json({ message: "It worked!" });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-app.post("/login", (req, res) => {
-  const { name } = req.body;
-  // You can add any logic here to handle the form submission
-  // For example, you might check if the name matches a certain value
-  if (name === "expectedName") {
-    res.send("Login successful!");
-  } else {
-    res.status(400).send("Invalid name");
-  }
-});
+// app.get("/api/v1/test", async (req, res) => {
+//   try {
+//     res.json({ message: "It worked!" });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
 // An app.all statement after these to handle page not found conditions.
 app.all("*", async (req, res) => {
