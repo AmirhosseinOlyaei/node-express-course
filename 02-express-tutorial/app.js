@@ -15,6 +15,9 @@ const logger = (req, res, next) => {
 // app.use statements for the middleware. You’ll eventually use many kinds of middleware, but for now the only middleware we are using is express.static().
 app.use(express.static("./methods-public"));
 
+// Middleware for URL-encoded Form Data
+app.use(express.urlencoded({ extended: true }));
+
 // Middleware for parsing JSON bodies
 app.use(express.json());
 app.use(logger);
