@@ -1,71 +1,46 @@
 console.log("Express Tutorial");
-const { products } = require("./data");
+// const { products, people } = require("./data");
 
 // The require statement to import the express module
 const express = require("express");
+const cookieParser = require("cookie-parser");
+const authRoutes = require("./routes/authRoutes");
+const peopleRouter = require("./routes/people");
 
 // Creation of the app as returned from calling express()
 const app = express();
 
+const logger = (req, res, next) => {
+  console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
+  next();
+};
+
 // app.use statements for the middleware. You’ll eventually use many kinds of middleware, but for now the only middleware we are using is express.static().
-app.use(express.static("./public"));
+app.use(express.static("./methods-public"));
+// Middleware for URL-encoded Form Data
+app.use(express.urlencoded({ extended: true }));
+// Middleware for parsing JSON bodies
+app.use(express.json());
+app.use(logger);
+// Middleware to parse cookies
+app.use(cookieParser());
+app.use(authRoutes);
+app.use("/api/v1/people", peopleRouter);
+
+app.get("/", logger, (req, res) => {
+  console.log("Home");
+});
+
+// An app.all statement after these to handle page not found conditions.
+app.all("*", async (req, res) => {
+  try {
+    res.send("Page not found");
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // Listen on port 3000
 app.listen(3000, () => {
   console.log("App listening on port 3000");
-});
-
-// app.get and app.post statements for the routes you will handle. Eventually these will be refactored into router modules, but for now you can put them inline.
-app.get("/get", (req, res) => {
-  res.send("Getting ...");
-});
-app.post("/post", (req, res) => {
-  res.send("Posting!");
-});
-app.get("/api/v1/test", (req, res) => {
-  res.json({ message: "It worked!" });
-});
-app.get("/api/v1/products", (req, res) => {
-  res.json(products);
-});
-
-// http://localhost:3000/api/v1/products/1
-app.get("/api/v1/products/:productID", (req, res) => {
-  const idToFind = parseInt(req.params.productID);
-  const product = products.find((p) => p.id === idToFind);
-
-  if (product) {
-    res.json(product);
-  } else {
-    res.status(404).json({ message: "That product was not found." });
-  }
-});
-
-// http://localhost:3000/api/v1/query?search=a&limit=2
-app.get("/api/v1/query", (req, res) => {
-  const { search, limit } = req.query;
-  let filteredProducts = products;
-
-  if (search) {
-    filteredProducts = filteredProducts.filter((p) => p.name.includes(search));
-  }
-
-  if (limit) {
-    filteredProducts = filteredProducts.slice(0, parseInt(limit));
-  }
-
-  res.json(filteredProducts);
-});
-
-// http://localhost:3000/api/v1/products/under/30
-app.get("/api/v1/products/under/:price", (req, res) => {
-  const maxPrice = parseFloat(req.params.price);
-  const filteredProducts = products.filter((p) => p.price <= maxPrice);
-
-  res.json(filteredProducts);
-});
-
-// An app.all statement after these to handle page not found conditions.
-app.all("*", (req, res) => {
-  res.send("Page not found");
 });
