@@ -5,20 +5,40 @@ const getAllTasks = (req, res) => {
 };
 
 const createTask = async (req, res) => {
-  const task = await Task.create(req.body);
-  res.status(201).json({ task });
+  try {
+    const task = await Task.create(req.body);
+    res.status(201).json({ task });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
-const getTask = (req, res) => {
-  res.json({ id: req.params.id });
+const getTask = async (req, res) => {
+  try {
+    res.json({ id: req.params.id });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
-const updateTask = (req, res) => {
-  res.send("update task");
+const updateTask = async (req, res) => {
+  try {
+    res.send("update task");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
-const deleteTask = (req, res) => {
-  res.send("delete task");
+const deleteTask = async (req, res) => {
+  try {
+    res.send("delete task");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = {
