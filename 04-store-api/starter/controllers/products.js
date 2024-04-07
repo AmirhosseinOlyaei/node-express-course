@@ -11,7 +11,8 @@
 // }
 // module.exports = { getAllProductsStatic };
 
-const getAllProductsStatic = (req, res) => {
+const getAllProductsStatic = async (req, res) => {
+  throw new Error("testing async errors");
   res.status(200).json({ msg: "products testing route" });
 };
 
