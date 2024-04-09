@@ -1,0 +1,14 @@
+1. The asyncWrapper middleware function is created to handle asynchronous errors in Express routes. It wraps the asynchronous route handler functions and passes any errors that occur to the next middleware, which is typically an error handling middleware. This helps to avoid repetitive try-catch blocks in every asynchronous route handler.
+
+2. To ensure that both a status code and an error message are sent back to the user when they request the URL for a task that does not exist, you can complete the code as follows:
+
+const getTask = asyncWrapper(async (req, res, next) => {
+  const { id: taskID } = req.params;
+  const task = await Task.findOne({ _id: taskID });
+  if (!task) {
+    return next(new CustomAPIError(`Task with id ${taskID} not found`, 404));
+  }
+  res.status(200).json({ task });
+});
+
+3. The express-async-errors NPM package provides the capability to automatically handle asynchronous errors in Express routes. By using this package, you do not have to manually create the asyncWrapper middleware, as it automatically wraps all asynchronous route handlers and passes any errors to the next middleware.
