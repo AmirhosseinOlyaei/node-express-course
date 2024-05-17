@@ -1,3 +1,4 @@
+// 05-JWT-Basics/starter/errors/custom-error.js
 class CustomAPIError extends Error {
   constructor(message, statusCode) {
     super(message);

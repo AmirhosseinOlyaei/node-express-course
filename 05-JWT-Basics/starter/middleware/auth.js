@@ -1,3 +1,4 @@
+// 05-JWT-Basics/starter/middleware/auth.js
 const jwt = require("jsonwebtoken");
 const { UnauthenticatedError } = require("../errors");
 
