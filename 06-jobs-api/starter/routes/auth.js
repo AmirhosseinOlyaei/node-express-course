@@ -12,6 +12,7 @@ const { generateToken } = require("../../config/jwt");
 const { sendMail } = require("../../config/mail");
 const { google } = require("googleapis");
 import * as jwt from "jsonwebtoken";
+import { register } from "../controllers/auth";
 const { OAuth2 } = google.auth;
 const CLIENT_ID = "1<YOUR_GoogleOAuthClientID_HERE>";
 const CLIENT_SECRET = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
@@ -21,48 +22,7 @@ const REFRESH_TOKEN = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 const oAuth2Client = new OAuth2(CLIENT_ID, CLIENT_SECRET);
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (user) {
-    throw new Error("User already exists");
-  }
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({
-    name,
-    email,
-    password: hashedPassword,
-  });
-  const savedUser = await newUser.save();
-  sendMail(
-    email,
-    "Verify Your Email",
-    "Verify Email",
-    '<a href="http://localhost:3000/api/auth/verify-email?token=' +
-      generateToken(savedUser) +
-      '">Verify Email</a>'
-  );
-  res.status(201).json({ message: "User created successfully" });
-  console.log(savedUser);
-  console.log(generateToken(savedUser));
-  console.log(req.body);
-  console.log(req.headers);
-  console.log(req.query);
-  console.log(req.params);
-  console.log(req.cookies);
-  console.log(req.session);
-  console.log(req.user);
-  console.log(req.isAuthenticated());
-  console.log(req.originalUrl);
-  console.log(req.method);
-  console.log(req.path);
-  console.log(req.baseUrl);
-  console.log(req.hostname);
-  console.log(req.protocol);
-  console.log(req.ip);
-  console.log(req.route);
-  console.log(req.url);
-});
+router.post("/register", register);
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
