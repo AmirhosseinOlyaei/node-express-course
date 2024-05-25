@@ -59,7 +59,7 @@ const login = async (req, res) => {
   }
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
   if (!isPasswordCorrect) {
-    throw new Error("Invalid credentials");
+    throw new UnauthenticatedError("Invalid credentials");
   }
   const token = user.createJWT();
   res
