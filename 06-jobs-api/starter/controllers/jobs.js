@@ -1,4 +1,4 @@
-// controllers/jobs.js
+// 06-jobs-api/starter/controllers/jobs.js
 
 const Job = require("../models/Job");
 const { StatusCodes } = require("http-status-codes");
