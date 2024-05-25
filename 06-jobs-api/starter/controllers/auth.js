@@ -1,6 +1,7 @@
 // 06-jobs-api/starter/controllers/auth.js
 const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
+const { BadRequestError, UnauthenticatedError } = require("../errors");
 
 const register = async (req, res) => {
   res.status(StatusCodes.CREATED).json(await User.create({ ...req.body }));
@@ -48,7 +49,22 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  res.send("login user");
+  const { email, password } = req.body;
+  if (!email || !password) {
+    throw new BadRequestError("Please provide email and password");
+  }
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new UnauthenticatedError("Invalid credentials");
+  }
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  if (!isPasswordCorrect) {
+    throw new Error("Invalid credentials");
+  }
+  const token = user.createJWT();
+  res
+    .status(StatusCodes.OK)
+    .json({ token, user: { name: user.name, email: user.email } });
 };
 
 module.exports = {
