@@ -3,6 +3,12 @@ require('express-async-errors');
 const express = require('express');
 const app = express();
 
+// connectDB
+
+// routers
+const authRouter = require("./routes/auth");
+const jobsRouter = require("./routes/jobs");
+
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
