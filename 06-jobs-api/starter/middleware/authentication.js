@@ -15,8 +15,7 @@ module.exports = (req, res, next) => {
   try {
     decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     // attach the user to the job routes
-    req.user = User.findById(decodedToken.userId).select("-password");
-
+    // req.user = User.findById(decodedToken.userId).select("-password");
     req.user = { userId: decodedToken.userId, name: decodedToken.name };
     next();
   } catch (err) {
@@ -26,14 +25,14 @@ module.exports = (req, res, next) => {
     throw new UnauthorizedError("No token");
   }
 
-  const { userId } = decodedToken;
-  User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        throw new UnauthorizedError("Invalid token");
-      }
-      req.user = user;
-      next();
-    })
-    .catch((err) => next(err));
+  // const { userId } = decodedToken;
+  // User.findById(userId)
+  //   .then((user) => {
+  //     if (!user) {
+  //       throw new UnauthorizedError("Invalid token");
+  //     }
+  //     req.user = user;
+  //     next();
+  //   })
+  //   .catch((err) => next(err));
 };
