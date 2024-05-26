@@ -22,10 +22,10 @@ const jobSchema = new Schema(
     salary: {
       type: Number,
     },
-    created_at: {
-      type: Date,
-      default: Date.now,
-    },
+    // created_at: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
     createdBy: {
       type: mongoose.Types.ObjectId,
       ref: "User",
