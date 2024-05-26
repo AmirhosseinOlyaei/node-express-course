@@ -1,8 +1,7 @@
 // 06-jobs-api/starter/controllers/jobs.js
-
-const Job = require("../models/Job");
-const { StatusCodes } = require("http-status-codes");
-const { BadRequestError, NotFoundError } = require("../errors");
+import Job from "../models/Job";
+import { StatusCodes } from "http-status-codes";
+import { BadRequestError, NotFoundError } from "../errors";
 
 const getAllJobs = async (req, res) => {
   const jobs = await Job.find({ createdBy: req.user.userId }).sort("createdAt");
