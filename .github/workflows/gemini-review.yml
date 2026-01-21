@@ -1,8 +1,3 @@
-# Gemini AI Review Configuration
-# This file configures the automated review behavior for this repository
-
-# Configuration will be added here based on your instructions
-
 name: PR Review Notification
 
 on:
