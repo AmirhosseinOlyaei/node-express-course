@@ -1,11 +1,18 @@
 const Product = require('../models/product');
 
 const getAllProductsStatic = async (req, res) => {
-  const products = await Product.find({ price: { $gt: 30 } })
-    .sort('price')
-    .select('name price');
+  try {
+    const products = await Product.find({ price: { $gt: 30 } })
+      .sort('price')
+      .select('name price');
 
-  res.status(200).json({ products, nbHits: products.length });
+    res.status(200).json({ products, nbHits: products.length });
+  } catch (error) {
+    res.status(500).json({ 
+      msg: 'Error fetching static products',
+      error: error.message 
+    });
+  }
 };
 const getAllProducts = async (req, res) => {
   const { featured, company, name, sort, fields, numericFilters, page, limit } = req.query;
