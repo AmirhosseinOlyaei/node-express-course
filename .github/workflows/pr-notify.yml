@@ -229,12 +229,18 @@ jobs:
                 body: body
               });
 
+              console.log('Creating Gemini prompt comment...');
+              console.log('Gemini prompt length:', geminiPrompt.length);
+              console.log('Gemini prompt preview:', geminiPrompt.substring(0, 200));
+
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
                 body: geminiPrompt
               });
+              
+              console.log('Both comments created successfully');
             } catch (error) {
               console.error('Error in script:', error);
               console.error('Error details:', error.message);
