@@ -32,7 +32,11 @@ jobs:
         id: rubric
         run: |
           WEEK="${{ steps.pr.outputs.week }}"
-          RUBRIC_FILE="guidebook-repo/assignment-rubrics/week-${WEEK}.md"
+          # Map week numbers to assignment names
+          case $WEEK in
+            8) RUBRIC_FILE="guidebook-repo/assignment-rubrics/08 - JWT Basics.md" ;;
+            *) RUBRIC_FILE="guidebook-repo/assignment-rubrics/week-${WEEK}.md" ;;
+          esac
           
           if [ -f "$RUBRIC_FILE" ]; then
             RUBRIC_CONTENT=$(cat "$RUBRIC_FILE")
@@ -40,9 +44,11 @@ jobs:
             echo "$RUBRIC_CONTENT" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
             echo "found=true" >> $GITHUB_OUTPUT
+            echo "rubric_file=${RUBRIC_FILE##*/}" >> $GITHUB_OUTPUT
           else
             echo "content=Rubric file not found for week ${WEEK}" >> $GITHUB_OUTPUT
             echo "found=false" >> $GITHUB_OUTPUT
+            echo "rubric_file=week-${WEEK}.md" >> $GITHUB_OUTPUT
           fi
 
       - name: Add Review Checklist Comment
@@ -55,9 +61,10 @@ jobs:
             const prFilesUrl = context.payload.pull_request.html_url + '/files';
             const rubricFound = '${{ steps.rubric.outputs.found }}' === 'true';
             const rubricContent = `${{ steps.rubric.outputs.content }}`;
+            const rubricFileName = '${{ steps.rubric.outputs.rubric_file }}';
             
-            const rubricUrl = `https://github.com/Code-the-Dream-School/node-express-guidebook/blob/main/assignment-rubrics/week-${week}.md`;
-            const lessonUrl = `https://github.com/Code-the-Dream-School/node-express-course/wiki/Week-${week}`;
+            const rubricUrl = `https://github.com/Code-the-Dream-School/node-express-guidebook/blob/main/assignment-rubrics/${rubricFileName}`;
+            const lessonUrl = `https://github.com/AmirhosseinOlyaei/node-express-course/blob/main/lessons/ctd-node-assignment-${week}.md`;
 
             let body;
             let geminiPrompt;
