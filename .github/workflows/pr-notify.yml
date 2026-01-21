@@ -53,17 +53,23 @@ jobs:
 
       - name: Add Review Checklist Comment
         uses: actions/github-script@v7
+        env:
+          WEEK: ${{ steps.pr.outputs.week }}
+          ACTION: ${{ steps.pr.outputs.action }}
+          RUBRIC_FOUND: ${{ steps.rubric.outputs.found }}
+          RUBRIC_CONTENT: ${{ steps.rubric.outputs.content }}
+          RUBRIC_FILE: ${{ steps.rubric.outputs.rubric_file }}
         with:
           script: |
-            const week = '${{ steps.pr.outputs.week }}';
-            const action = '${{ steps.pr.outputs.action }}';
+            const week = process.env.WEEK;
+            const action = process.env.ACTION;
             const prNumber = context.payload.pull_request.number;
             const prFilesUrl = context.payload.pull_request.html_url + '/files';
-            const rubricFound = '${{ steps.rubric.outputs.found }}' === 'true';
-            const rubricContent = `${{ steps.rubric.outputs.content }}`;
-            const rubricFileName = '${{ steps.rubric.outputs.rubric_file }}';
+            const rubricFound = process.env.RUBRIC_FOUND === 'true';
+            const rubricContent = process.env.RUBRIC_CONTENT || '';
+            const rubricFileName = process.env.RUBRIC_FILE || '';
             
-            // Escape rubric content to prevent JavaScript syntax errors
+            // Escape rubric content to prevent syntax issues inside generated prompts
             const escapedRubricContent = rubricContent
               .replace(/\\/g, '\\\\')
               .replace(/`/g, '\\`')
@@ -72,7 +78,7 @@ jobs:
               .replace(/\r/g, '\\r')
               .replace(/"/g, '\\"')
               .replace(/'/g, "\\'");
-            
+
             const rubricUrl = `https://github.com/Code-the-Dream-School/node-express-guidebook/blob/main/assignment-rubrics/${rubricFileName}`;
             const lessonUrl = `https://github.com/AmirhosseinOlyaei/node-express-course/blob/main/lessons/ctd-node-assignment-${week}.md`;
 
@@ -201,7 +207,7 @@ jobs:
                   '',
                   `# Week ${week} Re-review - PR #${prNumber}`,
                   '',
-                  '🔄 **New commits detected**',
+                  '🔄 **New commits detected**`,
                   '',
                   `- **Files Changed:** ${prFilesUrl}`,
                   `- **Rubric:** ${rubricUrl}`,
