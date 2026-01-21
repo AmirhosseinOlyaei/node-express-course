@@ -65,9 +65,13 @@ jobs:
             
             // Escape rubric content to prevent JavaScript syntax errors
             const escapedRubricContent = rubricContent
+              .replace(/\\/g, '\\\\')
               .replace(/`/g, '\\`')
               .replace(/\${/g, '\\${')
-              .replace(/\\n/g, '\\\\n');
+              .replace(/\n/g, '\\n')
+              .replace(/\r/g, '\\r')
+              .replace(/"/g, '\\"')
+              .replace(/'/g, "\\'");
             
             const rubricUrl = `https://github.com/Code-the-Dream-School/node-express-guidebook/blob/main/assignment-rubrics/${rubricFileName}`;
             const lessonUrl = `https://github.com/AmirhosseinOlyaei/node-express-course/blob/main/lessons/ctd-node-assignment-${week}.md`;
